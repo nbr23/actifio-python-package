@@ -339,9 +339,13 @@ class Actifio:
           self._lastout = response
           if 'result' not in response:
             return self._lastout
-          results['result'].extend(self._lastout['result'])
-          if len(self._lastout['result']) < limit:
-            return results
+          if type(response['result']) == list:
+            results['result'].extend(self._lastout['result'])
+            if len(self._lastout['result']) < limit:
+                return results
+          else:
+              results['result'] = self._lastout['result']
+              return results
     return results
 
   @ActEnforce.needs_token
