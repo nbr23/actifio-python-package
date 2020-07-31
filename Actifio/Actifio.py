@@ -309,7 +309,14 @@ class Actifio:
     for key in cmdArgs:
       if type(cmdArgs[key]) == dict:
         # Actifio API expects this to be urlencoded
-        _URI += key + '=' + urlencode_str('&'.join([ __regex_args(filter_key, cmdArgs[key][filter_key]) for filter_key in cmdArgs[key]])) + '&'
+        filters = []
+        for filter_key in cmdArgs[key]:
+            if type(cmdArgs[key][filter_key]) == list:
+                filters.extend([ __regex_args(filter_key, val) for val
+                    in cmdArgs[key][filter_key]])
+            else:
+                filters.append(__regex_args(filter_key, cmdArgs[key][filter_key]))
+        _URI += key + '=' + urlencode_str('&'.join(filters)) + '&'
       elif cmdArgs[key] == None:
         _URI += urlencode_str(key) + '&'
       else:
